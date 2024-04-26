@@ -16,6 +16,7 @@ class Settings(BaseSettings):
     custom_plugins: list[str] = Field(
         description="List of class paths where the custom plugins are installed.", default=[]
     )
+    blat_endpoint: str = Field(description="The API where the requests will be sent.", default="https://api.blat.ai")
     model_config = SettingsConfigDict(yaml_file=app_dir / "config")
 
     @classmethod

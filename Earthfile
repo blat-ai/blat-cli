@@ -5,6 +5,7 @@ WORKDIR /code
 ARG --global APP_NAME = "blat-cli"
 ARG --global USERNAME = "blat"
 
+
 RUN groupadd --gid 1001 $USERNAME
 RUN useradd --create-home --no-log-init --uid 1001 --gid 1001 $USERNAME
 
@@ -25,5 +26,4 @@ lock-deps:
 build:
     COPY pyproject.toml poetry.lock ./
     RUN poetry install --no-root
-    COPY . .
     SAVE IMAGE blat/$APP_NAME:latest
