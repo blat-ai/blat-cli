@@ -7,7 +7,7 @@ from blat_cli.init.command import install_playwright
 
 @pytest.fixture
 def pw_chromium(tmp_config):
-    install_playwright(tmp_config / "browsers")
+    install_playwright(tmp_config / "browsers", with_deps=False)
     return tmp_config / "browsers"
 
 

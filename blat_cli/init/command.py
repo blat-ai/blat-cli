@@ -14,16 +14,15 @@ from blat_cli.settings import Credentials
 from blat_cli.settings import playwright_dir
 
 
-def install_playwright(install_path: Path):
+def install_playwright(install_path: Path, with_deps: bool = True):
     driver_executable = compute_driver_executable()
     env = get_driver_env()
     env["PLAYWRIGHT_BROWSERS_PATH"] = str(install_path)
-    completed_process = subprocess.run(
-        [str(driver_executable), "install", "--with-deps", "chromium"],
-        env=env,
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.STDOUT,
-    )
+    args = [str(driver_executable), "install"]
+    if with_deps:
+        args.append("--with-deps")
+    args.append("chromium")
+    completed_process = subprocess.run(args, env=env, stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
     completed_process.check_returncode()
 
 

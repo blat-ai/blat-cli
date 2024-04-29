@@ -11,6 +11,7 @@ from typing import Any
 from typing import Callable
 from typing import Dict
 from typing import Generator
+from typing import Union
 
 import yaml
 from rich import print
@@ -118,7 +119,7 @@ class OutputFormat(ReusableCommandOption):
 
 class Command(Typer):
     description: str
-    subcommands: list[Callable[..., dict[Any, Any]] | "Command"] = []
+    subcommands: list[Union[Callable[..., dict[Any, Any]], "Command"]] = []
     extra_options: list[ReusableCommandOption] = [OutputFormat(), Debug()]
 
     @property

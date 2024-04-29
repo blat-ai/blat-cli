@@ -1,6 +1,7 @@
 import os
 from functools import lru_cache
 from pathlib import Path
+from typing import Optional
 from typing import Tuple
 from typing import Type
 
@@ -15,7 +16,7 @@ from pydantic_settings import YamlConfigSettingsSource
 
 app_dir = Path(typer.get_app_dir("blat"))
 if not app_dir.exists():
-    app_dir.mkdir()
+    app_dir.mkdir(parents=True)
 playwright_dir = app_dir / "browsers"
 os.environ["PLAYWRIGHT_BROWSERS_PATH"] = str(playwright_dir)
 
@@ -61,4 +62,4 @@ class Settings(BaseSettings):
 class Credentials(BaseSettings):
     model_config = SettingsConfigDict(yaml_file=app_dir / "auth", validate_assignment=True)
 
-    api_key: str | None = Field(description="API key for the authentication to Blat APIs.", default=None)
+    api_key: Optional[str] = Field(description="API key for the authentication to Blat APIs.", default=None)
