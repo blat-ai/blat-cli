@@ -136,7 +136,9 @@ class Command(Typer):
             if isinstance(subcommand, Command):
                 self.add_typer(subcommand, name=subcommand.name, help=subcommand.description)
             else:
-                self.command(name=subcommand.__name__, help=subcommand.__doc__)(self._add_extra_options(subcommand))
+                self.command(name=subcommand.__name__.replace("_", "-"), help=subcommand.__doc__)(
+                    self._add_extra_options(subcommand)
+                )
 
     def _add_extra_options(self, func: Callable[..., Any]):
         for option in self.extra_options:

@@ -6,6 +6,8 @@ from typing import Optional
 import typer
 from playwright._impl._driver import compute_driver_executable
 from playwright._impl._driver import get_driver_env
+from rich.console import Console
+from rich.panel import Panel
 from rich.progress import Progress
 from rich.progress import SpinnerColumn
 from rich.progress import TextColumn
@@ -13,15 +15,14 @@ from rich.progress import TextColumn
 from blat_cli.settings import Credentials
 from blat_cli.settings import playwright_dir
 
+console = Console()
 
-def install_playwright(install_path: Path, with_deps: bool = True):
+
+def install_playwright(install_path: Path):
     driver_executable = compute_driver_executable()
     env = get_driver_env()
     env["PLAYWRIGHT_BROWSERS_PATH"] = str(install_path)
-    args = [str(driver_executable), "install"]
-    if with_deps:
-        args.append("--with-deps")
-    args.append("chromium")
+    args = [str(driver_executable), "install", "chromium"]
     completed_process = subprocess.run(args, env=env, stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
     completed_process.check_returncode()
 
@@ -43,7 +44,9 @@ def init(api_key: Annotated[Optional[str], typer.Option(help="The API Key to acc
     if api_key:
         Credentials.get_instance().api_key = api_key  # Save the API key in the configuration file.
 
-    typer.echo("Blat CLI initialized succesfully!")
+    console.print("Remember to execute the following command if you haven't done it yet:")
+    console.print(Panel("$ sudo blat init-system", expand=True), style="")
+    console.print("Blat CLI initialized succesfully! \U0001F680", style="bold green")
 
     return {}
 
