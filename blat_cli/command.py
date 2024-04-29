@@ -17,7 +17,7 @@ from rich import print
 from typer import Option
 from typer import Typer
 
-from blat_cli.settings import settings
+from blat_cli.settings import Settings
 from blat_cli.utils import camel_to_snake_case
 
 
@@ -109,15 +109,16 @@ class OutputFormat(ReusableCommandOption):
         """
         Prints the command output in the selected format.
         """
-        if kwargs.get(self.name, self.default_value) == OutputFormats.json:
-            print(json.dumps(command_output))
-        else:
-            print(yaml.dump(command_output))
+        if command_output:
+            if kwargs.get(self.name, self.default_value) == OutputFormats.json:
+                print(json.dumps(command_output))
+            else:
+                print(yaml.dump(command_output))
 
 
 class Command(Typer):
     description: str
-    subcommands: list[Callable[..., dict[Any, Any]]]
+    subcommands: list[Callable[..., dict[Any, Any]] | "Command"] = []
     extra_options: list[ReusableCommandOption] = [OutputFormat(), Debug()]
 
     @property
@@ -131,7 +132,10 @@ class Command(Typer):
 
     def _register_subcommands(self):
         for subcommand in self.subcommands:
-            self.command(name=subcommand.__name__, help=subcommand.__doc__)(self._add_extra_options(subcommand))
+            if isinstance(subcommand, Command):
+                self.add_typer(subcommand, name=subcommand.name, help=subcommand.description)
+            else:
+                self.command(name=subcommand.__name__, help=subcommand.__doc__)(self._add_extra_options(subcommand))
 
     def _add_extra_options(self, func: Callable[..., Any]):
         for option in self.extra_options:
@@ -144,7 +148,7 @@ def load_plugin_commands_from_settings() -> Generator[Command, None, None]:
     """
     Load the custom plugins from the settings.
     """
-    custom_plugins = settings.custom_plugins
+    custom_plugins = Settings.get_instance().custom_plugins
     for plugin in custom_plugins:
         module = importlib.import_module(plugin)
         yield module.command

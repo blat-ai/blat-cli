@@ -1,7 +1,7 @@
 import inspect
 
 from blat_cli.command import load_plugin_commands_from_settings
-from blat_cli.settings import settings
+from blat_cli.settings import Settings
 from tests.conftest import Fake
 from tests.conftest import FakeCommand
 from tests.conftest import fake_subcommand
@@ -40,8 +40,8 @@ def test_command_created():
     assert subcommand_signature.return_annotation == dict[str, str]
 
 
-def test_load_plugin_commands_from_settings(mocker):
-    mocker.patch.object(settings, "custom_plugins", ["tests.unit.test_command"])
+def test_load_plugin_commands_from_settings(tmp_config):
+    Settings.get_instance().custom_plugins = ["tests.unit.test_command"]
     plugins = list(load_plugin_commands_from_settings())
 
     assert len(plugins) == 1

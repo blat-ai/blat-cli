@@ -4,6 +4,9 @@ version = "0.0.1"
 description = "Command Line Interface to manage Blat AI agents"
 authors = ["Blat AI"]
 
+[tool.poetry.scripts]
+blat = "blat_cli.cli:cli"
+
 [tool.poetry.dependencies]
 python = ">=3.11,<3.12"
 typer = ">=0.12.3,<0.13"

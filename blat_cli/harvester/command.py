@@ -14,10 +14,10 @@ from rich import print
 
 from blat_cli.client import BlatClient
 from blat_cli.command import Command
-from blat_cli.settings import credentials
-from blat_cli.settings import settings
+from blat_cli.settings import Credentials
+from blat_cli.settings import Settings
 
-client = BlatClient(settings.blat_endpoint, credentials.api_key)
+client = BlatClient(Settings.get_instance().blat_endpoint, Credentials.get_instance().api_key)
 
 
 @contextlib.contextmanager
