@@ -1,0 +1,26 @@
+{
+	"name": "blat-cli",
+	"image": "blat/blat-cli:latest",
+	"workspaceFolder": "/code",
+	"workspaceMount": "source=${localWorkspaceFolder},target=/code,type=bind",
+	"remoteEnv": {
+        "LOCAL_WORKSPACE_FOLDER": "/code",
+        "PYTHONPATH": "/code:${env:PYTHONPATH}"
+    },
+	"remoteUser": "blat",
+	"customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-python.python",
+                "earthly.earthfile-syntax-highlighting",
+                "GitHub.copilot",
+                "tamasfe.even-better-toml",
+                "charliermarsh.ruff",
+                "ms-pyright.pyright"
+            ]
+        }
+    },
+    "features": {
+        "ghcr.io/devcontainers-contrib/features/zsh-plugins:0": {}
+    }
+}

@@ -1,0 +1,68 @@
+[tool.poetry]
+name = "blat-cli"
+version = "0.0.1"
+description = "Command Line Interface to manage Blat AI agents"
+authors = ["Blat AI"]
+
+[tool.poetry.scripts]
+blat = "blat_cli.cli:cli"
+
+[tool.poetry.dependencies]
+python = ">=3.9,<3.12"
+typer = ">=0.12.3,<0.13"
+pydantic-settings = ">=2.2.1,<2.3"
+playwright = ">=1.41.2,<1.42"
+httpx = ">=0.27.0,<0.28"
+
+[tool.poetry.group.dev.dependencies]
+pytest = ">=7.4,<7.5"
+pytest-mock = ">=3.14.0,<3.15"
+ruff = ">=0.1.14,<0.2"
+pyright = "==1.1.325"
+pyyaml = ">=6.0,<6.1"
+respx = ">=0.21.1,<0.22"
+
+[build-system]
+requires = ["poetry>=1.6,<1.7"]
+build-backend = "poetry.masonry.api"
+
+[tool.pylint."messages control"]
+ignore = ["setup.py", "__init__.py"]
+disable = "all"
+enable = [
+    "empty-docstring",
+    "missing-class-docstring",
+    "missing-function-docstring",
+    "missing-module-docstring",
+]
+
+[tool.pyright]
+reportMissingTypeArgument = true # Report generic classes used without type arguments
+strictListInference = true       # Use union types when inferring types of lists elements, instead of Any
+
+[tool.ruff]
+line-length = 120
+indent-width = 4
+target-version = "py311"
+
+[tool.ruff.lint]
+select = [
+    "E",  # pycodestyle errors
+    "W",  # pycodestyle warnings
+    "F",  # pyflakes
+    "I",  # isort
+    "C",  # flake8-comprehensions
+    "B",  # flake8-bugbear
+    # "UP",  # pyupgrade
+]
+
+[tool.ruff.format]
+# Like Black, use double quotes for strings.
+quote-style = "double"
+
+# Like Black, indent with spaces, rather than tabs.
+indent-style = "space"
+
+[tool.ruff.lint.isort]
+case-sensitive = true
+force-single-line = true
