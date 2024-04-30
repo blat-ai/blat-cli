@@ -49,7 +49,7 @@ def init(
 
     console.print("Remember to execute the following command if you haven't done it yet:")
     console.print(Panel("$ sudo blat init-system", expand=True), style="")
-    console.print("Blat CLI initialized succesfully! \U0001F680", style="bold green")
+    console.print("Blat CLI initialized succesfully!", style="bold green")
 
     return {}
 

@@ -27,7 +27,7 @@ def init_system() -> dict[Any, Any]:
         progress.add_task(description="Installing the dependencies...", total=None)
         install_playwright_system_dependencies()
 
-    console.print("Blat CLI system dependencies installed successfully! \U0001F680", style="bold green")
+    console.print("Blat CLI system dependencies installed successfully!", style="bold green")
 
     return {}
 
