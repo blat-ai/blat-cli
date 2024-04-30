@@ -1,9 +1,9 @@
 import os
 from pathlib import Path
 from typing import Optional
-from typing import Self
 from typing import Tuple
 from typing import Type
+from typing import TypeVar
 
 import typer
 import yaml
@@ -15,6 +15,8 @@ from pydantic_settings import SettingsConfigDict
 from pydantic_settings import YamlConfigSettingsSource
 
 from blat_cli.utils import PydanticSingleton
+
+BaseSettingsType = TypeVar("BaseSettingsType", bound="BaseSettings")
 
 app_dir = Path(typer.get_app_dir("blat"))
 if not app_dir.exists():
@@ -36,7 +38,7 @@ class BaseSettings(PydanticBaseSettings, metaclass=PydanticSingleton):
         return (env_settings, dotenv_settings, YamlConfigSettingsSource(settings_cls))
 
     @model_validator(mode="after")
-    def save_settings(self) -> Self:
+    def save_settings(self: BaseSettingsType) -> BaseSettingsType:
         """
         Saves the settings in the configuration file automatically every time the model is validated.
         """
