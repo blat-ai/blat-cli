@@ -17,11 +17,11 @@ from blat_cli.command import Command
 from blat_cli.settings import Credentials
 from blat_cli.settings import Settings
 
-client = BlatClient(Settings.get_instance().blat_endpoint, Credentials.get_instance().api_key)
+client = BlatClient(Settings().blat_endpoint, Credentials().api_key)
 
 
 @contextlib.contextmanager
-def browser(url: Optional[str] = None, **kwargs) -> Generator[Page, None, None]:
+def browser(url: Optional[str] = None, **kwargs: Any) -> Generator[Page, None, None]:
     pw = sync_playwright().start()
     browser = pw.chromium.launch(**kwargs)
     page = browser.new_page()

@@ -28,7 +28,7 @@ def test_init_no_api_key(mocker, tmp_config, init_runner):
     init_runner([], input="\n")
 
     install_pw_mock.assert_called_once_with(settings.playwright_dir)
-    assert settings.Credentials.get_instance().api_key is None
+    assert settings.Credentials().api_key is None
 
 
 def test_init_option_empty_api_key(mocker, tmp_config, init_runner):
@@ -37,7 +37,7 @@ def test_init_option_empty_api_key(mocker, tmp_config, init_runner):
     init_runner(["--api-key", ""], input="\n")
 
     install_pw_mock.assert_called_once_with(settings.playwright_dir)
-    assert settings.Credentials.get_instance().api_key is None
+    assert settings.Credentials().api_key is None
 
 
 def test_init_option_api_key(mocker, tmp_config, init_runner):
@@ -46,4 +46,4 @@ def test_init_option_api_key(mocker, tmp_config, init_runner):
     init_runner(["--api-key", "1234"])
 
     install_pw_mock.assert_called_once_with(settings.playwright_dir)
-    assert settings.Credentials.get_instance().api_key == "1234"
+    assert settings.Credentials().api_key == "1234"

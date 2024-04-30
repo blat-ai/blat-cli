@@ -30,19 +30,19 @@ class ReusableCommandOption:
     def name(self) -> str:
         return camel_to_snake_case(self.__class__.__name__)
 
-    def pre_command(self, *args, **kwargs):
+    def pre_command(self, *args: Any, **kwargs: Any) -> None:
         """
         Hook to run code before the command is executed.
         """
         pass
 
-    def post_command(self, command_output: Any, *args, **kwargs):
+    def post_command(self, command_output: Any, *args: Any, **kwargs: Any) -> None:
         """
         Hook to run code after the command is executed.
         """
         pass
 
-    def _rebuild_signature(self, func: Callable[..., Any], wrapper: Callable[..., Any]):
+    def _rebuild_signature(self, func: Callable[..., Any], wrapper: Callable[..., Any]) -> Callable[..., Any]:
         """
         Modifies the wrapper signature of the wrapper function to look like the original function and adds the option
         to the signature. This is required so that the option is picked by Typer and the help message is generated.
@@ -66,12 +66,12 @@ class ReusableCommandOption:
         wrapper.__signature__ = signature.replace(parameters=parameters)  # type: ignore
         return wrapper
 
-    def add_option(self, func: Callable[..., Any]):
+    def add_option(self, func: Callable[..., Any]) -> Callable[..., Any]:
         """
         Wraps the command function to add the option to the signature and call the pre and post hooks.
         """
 
-        def wrapper(*args: list[Any], **kwargs: Dict[str, Any]):
+        def wrapper(*args: list[Any], **kwargs: Dict[str, Any]) -> Any:
             option_value = kwargs.pop(self.name)
             self.pre_command(*args, **kwargs, **{self.name: option_value})
             command_output = func(*args, **kwargs)
@@ -86,7 +86,7 @@ class Debug(ReusableCommandOption):
     annotation = Annotated[bool, Option(help="Enable debug mode", rich_help_panel="Output Options")]
     default_value = False
 
-    def pre_command(self, *args: list[Any], **kwargs: Dict[str, Any]):
+    def pre_command(self, *args: list[Any], **kwargs: Dict[str, Any]) -> None:
         """
         Sets the DEBUG level for ALL of the loggers in the application.
         """
@@ -106,7 +106,7 @@ class OutputFormat(ReusableCommandOption):
     ]
     default_value = OutputFormats.json
 
-    def post_command(self, command_output: Any, *args: list[Any], **kwargs: Dict[str, Any]):
+    def post_command(self, command_output: Any, *args: list[Any], **kwargs: Dict[str, Any]) -> None:
         """
         Prints the command output in the selected format.
         """
@@ -126,12 +126,12 @@ class Command(Typer):
     def name(self) -> str:
         return camel_to_snake_case(self.__class__.__name__)
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args: Any, **kwargs: Any):
         kwargs["no_args_is_help"] = True
         super().__init__(*args, **kwargs)
         self._register_subcommands()
 
-    def _register_subcommands(self):
+    def _register_subcommands(self) -> None:
         for subcommand in self.subcommands:
             if isinstance(subcommand, Command):
                 self.add_typer(subcommand, name=subcommand.name, help=subcommand.description)
@@ -140,7 +140,7 @@ class Command(Typer):
                     self._add_extra_options(subcommand)
                 )
 
-    def _add_extra_options(self, func: Callable[..., Any]):
+    def _add_extra_options(self, func: Callable[..., Any]) -> Callable[..., Any]:
         for option in self.extra_options:
             func = option.add_option(func)
 
@@ -151,7 +151,7 @@ def load_plugin_commands_from_settings() -> Generator[Command, None, None]:
     """
     Load the custom plugins from the settings.
     """
-    custom_plugins = Settings.get_instance().custom_plugins
+    custom_plugins = Settings().custom_plugins
     for plugin in custom_plugins:
         module = importlib.import_module(plugin)
         yield module.command

@@ -1,6 +1,7 @@
 import subprocess
 from pathlib import Path
 from typing import Annotated
+from typing import Any
 from typing import Optional
 
 import typer
@@ -18,7 +19,7 @@ from blat_cli.settings import playwright_dir
 console = Console()
 
 
-def install_playwright(install_path: Path):
+def install_playwright(install_path: Path) -> None:
     driver_executable = compute_driver_executable()
     env = get_driver_env()
     env["PLAYWRIGHT_BROWSERS_PATH"] = str(install_path)
@@ -27,7 +28,9 @@ def install_playwright(install_path: Path):
     completed_process.check_returncode()
 
 
-def init(api_key: Annotated[Optional[str], typer.Option(help="The API Key to access Blat endpoints")] = None):
+def init(
+    api_key: Annotated[Optional[str], typer.Option(help="The API Key to access Blat endpoints")] = None,
+) -> dict[Any, Any]:
     """
     Install the dependencies and initialize the Blat CLI configuration.
     """
@@ -42,7 +45,7 @@ def init(api_key: Annotated[Optional[str], typer.Option(help="The API Key to acc
             default="",
         )
     if api_key:
-        Credentials.get_instance().api_key = api_key  # Save the API key in the configuration file.
+        Credentials().api_key = api_key  # Save the API key in the configuration file.
 
     console.print("Remember to execute the following command if you haven't done it yet:")
     console.print(Panel("$ sudo blat init-system", expand=True), style="")

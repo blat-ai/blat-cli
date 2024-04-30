@@ -1,4 +1,5 @@
 import subprocess
+from typing import Any
 
 from playwright._impl._driver import compute_driver_executable
 from playwright._impl._driver import get_driver_env
@@ -10,7 +11,7 @@ from rich.progress import TextColumn
 console = Console()
 
 
-def install_playwright_system_dependencies():
+def install_playwright_system_dependencies() -> None:
     driver_executable = compute_driver_executable()
     env = get_driver_env()
     args = [str(driver_executable), "install-deps"]
@@ -18,7 +19,7 @@ def install_playwright_system_dependencies():
     completed_process.check_returncode()
 
 
-def init_system():
+def init_system() -> dict[Any, Any]:
     """
     Installs the system dependencies required by Blat CLI.
     """
