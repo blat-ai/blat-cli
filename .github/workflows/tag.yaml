@@ -1,0 +1,18 @@
+name: Release tag created
+
+on:
+  create:
+    tags:
+      - "[0-9]+.[0-9]+.[0-9]+"
+  push:
+    tags:
+      - "[0-9]+.[0-9]+.[0-9]+"
+
+jobs:
+  test:
+    uses: ./.github/workflows/run-tests.yaml
+    secrets: inherit
+  release:
+    needs: test
+    uses: ./.github/workflows/release.yaml
+    secrets: inherit

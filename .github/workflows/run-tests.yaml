@@ -1,8 +1,7 @@
 name: Test & Check
 
 on:
-  push:
-  pull_request:
+  workflow_call:
 
 jobs:
   build:
@@ -29,9 +28,3 @@ jobs:
       run: python bin/run_tests.py --with-cov
     - name: Run checks
       run: python bin/check.py -p ${{ matrix.python-version }}
-    - name: Coverage report
-      if: github.event_name == 'pull_request'
-      uses: orgoro/coverage@v3.1
-      with:
-        coverageFile: coverage.xml
-        token: ${{ secrets.GITHUB_TOKEN }}
