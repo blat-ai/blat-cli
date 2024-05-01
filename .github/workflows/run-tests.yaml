@@ -1,0 +1,30 @@
+name: Test & Check
+
+on:
+  workflow_call:
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.9", "3.10", "3.11", "3.12"]
+        os: [ubuntu-latest, macOS-latest, windows-latest]
+        exclude:
+        - { python-version: "3.9", os: "macos-latest" }
+        include:
+        - { python-version: "3.9", os: "macos-13" }
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install dependencies
+      run: python bin/install.py
+    - name: Run tests
+      run: python bin/run_tests.py --with-cov
+    - name: Run checks
+      run: python bin/check.py -p ${{ matrix.python-version }}

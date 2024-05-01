@@ -9,7 +9,7 @@ for plugin in load_plugin_commands_from_settings():
 
 
 class BlatCLI(Command):
-    subcommands = DEFAULT_COMMANDS + plugins
+    subcommands = [*DEFAULT_COMMANDS, *plugins]
 
 
 cli = BlatCLI()

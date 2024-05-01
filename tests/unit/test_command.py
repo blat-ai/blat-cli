@@ -41,7 +41,7 @@ def test_command_created():
 
 
 def test_load_plugin_commands_from_settings(tmp_config):
-    Settings.get_instance().custom_plugins = ["tests.unit.test_command"]
+    Settings().custom_plugins = ["tests.unit.test_command"]
     plugins = list(load_plugin_commands_from_settings())
 
     assert len(plugins) == 1

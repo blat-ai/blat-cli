@@ -17,16 +17,17 @@ class Harvester(BaseModel):
 
 
 class BlatClient:
-    def __init__(self, blat_endpoint, api_key):
+    def __init__(self, blat_endpoint: str, api_key: Optional[str] = None):
         self.blat_endpoint = blat_endpoint
         self.api_key = api_key
 
     def harvester_generate(self, schema: str, content: str, start_url: str) -> Harvester:
         file_name = "harvester.zip"
+        headers = {"X-API-KEY": self.api_key} if self.api_key else {}
         resp = httpx.post(
             urljoin(self.blat_endpoint, "/harvester/generate"),
             json={"json_schema": schema, "content": content, "start_url": start_url},
-            headers={"X-API-KEY": self.api_key},
+            headers=headers,
         )
         resp.raise_for_status()
 

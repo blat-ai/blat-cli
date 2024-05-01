@@ -1,0 +1,11 @@
+name: Code pushed
+
+on:
+  push:
+    branches:
+      - '**'
+
+jobs:
+  test:
+    uses: ./.github/workflows/run-tests.yaml
+    secrets: inherit

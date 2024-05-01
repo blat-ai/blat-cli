@@ -1,9 +1,9 @@
 import os
-from functools import lru_cache
 from pathlib import Path
 from typing import Optional
 from typing import Tuple
 from typing import Type
+from typing import TypeVar
 
 import typer
 import yaml
@@ -14,6 +14,10 @@ from pydantic_settings import PydanticBaseSettingsSource
 from pydantic_settings import SettingsConfigDict
 from pydantic_settings import YamlConfigSettingsSource
 
+from blat_cli.utils import PydanticSingleton
+
+BaseSettingsType = TypeVar("BaseSettingsType", bound="BaseSettings")
+
 app_dir = Path(typer.get_app_dir("blat"))
 if not app_dir.exists():
     app_dir.mkdir(parents=True)
@@ -21,7 +25,7 @@ playwright_dir = app_dir / "browsers"
 os.environ["PLAYWRIGHT_BROWSERS_PATH"] = str(playwright_dir)
 
 
-class BaseSettings(PydanticBaseSettings):
+class BaseSettings(PydanticBaseSettings, metaclass=PydanticSingleton):
     @classmethod
     def settings_customise_sources(
         cls,
@@ -34,7 +38,7 @@ class BaseSettings(PydanticBaseSettings):
         return (env_settings, dotenv_settings, YamlConfigSettingsSource(settings_cls))
 
     @model_validator(mode="after")
-    def save_settings(self):
+    def save_settings(self: BaseSettingsType) -> BaseSettingsType:
         """
         Saves the settings in the configuration file automatically every time the model is validated.
         """
@@ -43,11 +47,6 @@ class BaseSettings(PydanticBaseSettings):
             with open(str(settings_file), "w+") as f:
                 f.write(yaml.dump(self.model_dump()))
         return self
-
-    @classmethod
-    @lru_cache(maxsize=1)
-    def get_instance(cls):
-        return cls()
 
 
 class Settings(BaseSettings):

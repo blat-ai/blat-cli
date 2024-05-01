@@ -1,0 +1,20 @@
+name: Upload project to PyPI
+
+on:
+  workflow_call:
+
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Set up Python 3.12
+      uses: actions/setup-python@v5
+      with:
+        python-version: 3.12
+    - name: Install dependencies
+      run: python bin/install.py
+    - name: Check version
+      run: '[[ "$(poetry version -s)" == "${{ github.ref_name }}" ]]'
+    - name: Release package
+      run: python bin/dist.py -p --pypi-repository ${{ vars.PYPI_REPOSITORY }} --pypi-token ${{ secrets.PYPI_TOKEN }}

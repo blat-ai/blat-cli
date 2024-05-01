@@ -33,6 +33,6 @@ def tmp_config(tmp_path, mocker, monkeypatch):
     class MockSettings(settings.Settings):
         model_config = settings.SettingsConfigDict(yaml_file=tmp_path / "config", validate_assignment=True)
 
-    mocker.patch("blat_cli.settings.Credentials.get_instance", return_value=MockCredentials())
-    mocker.patch("blat_cli.settings.Settings.get_instance", return_value=MockSettings())
+    mocker.patch("blat_cli.settings.Credentials.__call__", return_value=MockCredentials())
+    mocker.patch("blat_cli.settings.Settings.__call__", return_value=MockSettings())
     return tmp_path
