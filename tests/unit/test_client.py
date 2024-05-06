@@ -12,7 +12,7 @@ from blat_cli.client import Harvester
 
 @pytest.fixture
 def blat_client() -> BlatClient:
-    return BlatClient("http://test.blat.ai", str(uuid.uuid4()))
+    return BlatClient("http://test.blat.ai", api_key=str(uuid.uuid4()))
 
 
 def test_generate_harvester(blat_client, respx_mock):

@@ -17,7 +17,9 @@ from blat_cli.command import Command
 from blat_cli.settings import Credentials
 from blat_cli.settings import Settings
 
-client = BlatClient(Settings().blat_endpoint, Credentials().api_key)
+client = BlatClient(
+    Settings().blat_endpoint, client_timeout_s=Settings().blat_client_timeout_s, api_key=Credentials().api_key
+)
 
 
 @contextlib.contextmanager

@@ -56,6 +56,7 @@ class Settings(BaseSettings):
         description="List of class paths where the custom plugins are installed.", default=[]
     )
     blat_endpoint: str = Field(description="The API where the requests will be sent.", default="https://api.blat.ai")
+    blat_client_timeout_s: int = Field(description="Timeout for the Blat client in seconds.", default=300)
 
 
 class Credentials(BaseSettings):
