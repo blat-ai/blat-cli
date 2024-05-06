@@ -17,8 +17,9 @@ class Harvester(BaseModel):
 
 
 class BlatClient:
-    def __init__(self, blat_endpoint: str, api_key: Optional[str] = None):
+    def __init__(self, blat_endpoint: str, client_timeout_s: int = 300, api_key: Optional[str] = None):
         self.blat_endpoint = blat_endpoint
+        self.client_timeout_s = client_timeout_s
         self.api_key = api_key
 
     def harvester_generate(self, schema: str, content: str, start_url: str) -> Harvester:
@@ -28,6 +29,7 @@ class BlatClient:
             urljoin(self.blat_endpoint, "/harvester/generate"),
             json={"json_schema": schema, "content": content, "start_url": start_url},
             headers=headers,
+            timeout=self.client_timeout_s,
         )
         resp.raise_for_status()
 
