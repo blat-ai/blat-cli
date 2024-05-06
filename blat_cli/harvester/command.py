@@ -10,13 +10,17 @@ from typing import Tuple
 import typer
 from playwright.sync_api import sync_playwright
 from playwright.sync_api._generated import Page
-from rich import print
+from rich.console import Console
+from rich.progress import Progress
+from rich.progress import SpinnerColumn
+from rich.progress import TextColumn
 
 from blat_cli.client import BlatClient
 from blat_cli.command import Command
 from blat_cli.settings import Credentials
 from blat_cli.settings import Settings
 
+console = Console()
 client = BlatClient(
     Settings().blat_endpoint, client_timeout_s=Settings().blat_client_timeout_s, api_key=Credentials().api_key
 )
@@ -36,7 +40,7 @@ def browser(url: Optional[str] = None, **kwargs: Any) -> Generator[Page, None, N
 
 
 def obtain_content_and_url(url: Optional[str] = None) -> Tuple[str, str]:
-    print("A browser will open. Please navigate to the page where the data is located and visible.")
+    console.print("A browser will open. Please navigate to the page where the data is located and visible.")
     with browser(url, headless=False) as page:
         typer.confirm("Is the data visible in the browser?", default=True, abort=True, show_default=True)
         content = page.content()
@@ -57,13 +61,16 @@ def generate(
     for the given schema and URL.
     """
     url, content = obtain_content_and_url(url)
-    harvester = client.harvester_generate(schema, content, url)
-    file_path = output_path / (harvester.file_name or "harvester.zip")
+    with Progress(SpinnerColumn(), TextColumn("[progress.description]{task.description}"), transient=True) as progress:
+        progress.add_task(description=f"Generating your Harvester for {url}...", total=None)
+        harvester = client.harvester_generate(schema, content, url)
+        file_path = output_path / (harvester.file_name or "harvester.zip")
 
-    with open(file_path, "wb") as f:
-        f.write(harvester.file_content)
+        with open(file_path, "wb") as f:
+            f.write(harvester.file_content)
 
-    return {"schema": schema, "url": url, "file_path": file_path}
+    console.print(f"Harvester generated successfully! You can find it in {str(file_path)}", style="bold green")
+    return {}
 
 
 class Harvester(Command):
