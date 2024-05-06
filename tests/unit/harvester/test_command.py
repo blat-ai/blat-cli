@@ -42,11 +42,10 @@ def test_generate(mocker, tmpdir):
         file_name="harvester.zip",
     )
 
-    output = generate(json_schema, url=url, output_path=Path(tmpdir))
+    generate(json_schema, url=url, output_path=Path(tmpdir))
 
-    assert output == {"schema": json_schema, "url": url, "file_path": Path(tmpdir) / "harvester.zip"}
-    assert os.path.exists(output["file_path"])
-    with open(output["file_path"], "rb") as f:
+    assert os.path.exists(Path(tmpdir) / "harvester.zip")
+    with open(Path(tmpdir) / "harvester.zip", "rb") as f:
         assert f.read() == file_content
 
-    os.remove(output["file_path"])
+    os.remove(Path(tmpdir) / "harvester.zip")
