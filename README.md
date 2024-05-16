@@ -49,6 +49,16 @@ blat harvester generate --schema $BLAT_SCHEMA --url $TARGET_URL
 ```
 This will return you a zip file in your current folder if the generation was succesful. Decompress the file and you should have a web scraping algorithm ready to be used, just follow the README! 🚀
 
+## Features
+* XPath generation for data in HTML, lists included
+* Generation of post processing functions
+* Code generation in Python
+
+## Limitations
+* Parsing JSON responses might not fully work
+* The generated code doesn't navigate/paginate
+* Files and multimedia extraction is not implemented (workaround is to extract the URL)
+
 ## Getting Help
 GitHub is currently the only way to interact with our team. You can [open an issue](https://github.com/blat-ai/blat-cli/issues/new/choose) and choose one of the templates to ask for guidance, to report a bug, or to request a new feature.
 
